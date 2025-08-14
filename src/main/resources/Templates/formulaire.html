@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulaire d'envoi</title>
+  <link rel="stylesheet" th:href="@{/css/formulaire.css}" />
+</head>
+<body>
+
+<h1>Formulaire d'envoi</h1>
+
+
+
+
+  <form action="<%= request.getContextPath() %>/envoi-doc" method="post" enctype="multipart/form-data">
+    <!-- ID de l'utilisateur connecté -->
+    <input type="hidden" name="user_id" value="<%= currentUser.getId() %>"/>
+
+    <!-- Nom du document -->
+    <label for="nom_document">Nom du document :</label>
+    <input type="text" id="nom_document" name="nom_document" placeholder="Nom du document" required>
+
+    <!-- Type du document -->
+    <label for="type_document">Type de document :</label>
+    <select id="type_document" name="type_document" required>
+        <option value="pdf">PDF</option>
+        <option value="image">Image</option>
+    </select>
+
+    <!-- Fichier -->
+    <label for="fichier">Fichier :</label>
+    <input type="file" id="fichier" name="fichier" required>
+
+    <br><br>
+    <button type="submit">📤 Envoyer</button>
+</form>
+
+
+
+
+<script>
+  // Date du jour
+  document.getElementById("date").value = new Date().toISOString().split('T')[0];
+
+  // Charger fichier depuis localStorage
+  const fileData = localStorage.getItem("uploadedFile");
+  const fileType = localStorage.getItem("fileType");
+  const preview = document.getElementById("preview");
+
+  if (fileData) {
+    if (fileType.startsWith("image/")) {
+      const img = document.createElement("img");
+      img.src = fileData;
+      preview.appendChild(img);
+    } else if (fileType === "application/pdf") {
+      const iframe = document.createElement("iframe");
+      iframe.src = fileData;
+      iframe.width = "400";
+      iframe.height = "500";
+      preview.appendChild(iframe);
+    }
+  }
+</script>
+  
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>DIGIT DOCS - Tableau de Bord Admin</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f5f6fa;
+}
+header {
+    background: #004080;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+header h1 { margin: 0; }
+nav {
+    display: flex;
+    justify-content: center;
+    background: #003366;
+}
+nav button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 15px 25px;
+    font-weight: bold;
+    cursor: pointer;
+}
+nav button.active { background: #002244; }
+section { display: none; padding: 20px; }
+section.active { display: block; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+th { background: #004080; color: white; }
+.action-btn { padding: 6px 10px; margin: 0 3px; border: none; border-radius: 4px; color: white; cursor: pointer; }
+.valider { background: #28a745; }
+.rejeter { background: #dc3545; }
+.doc-preview { max-width: 80px; cursor: pointer; }
+.qr-code { width: 80px; height: 80px; margin-top: 5px; }
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center; align-items: center;
+}
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90%; max-height: 90%;
+}
+.modal-content img { max-width: 100%; max-height: 80vh; }
+.close-modal { float: right; cursor: pointer; font-size: 1.5em; }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>📂 DIGIT DOCS - Admin Dashboard</h1>
+</header>
+
+<nav>
+    <button class="tab-btn active" data-tab="pending">📄 En attente</button>
+    <button class="tab-btn" data-tab="valid">✅ Authentiques</button>
+    <button class="tab-btn" data-tab="invalid">❌ Faux docs</button>
+</nav>
+
+<section id="pending" class="active">
+    <h2>Documents en attente</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Nom</th><th>Aperçu</th><th>Date</th><th>Auteur</th><th>QR Code</th><th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="pending-body">
+            <!-- Documents seront ajoutés via JS -->
+        </tbody>
+    </table>
+</section>
+
+<section id="valid">
+    <h2>Documents authentiques</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Nom</th><th>Aperçu</th><th>Date</th><th>Auteur</th><th>QR Code</th>
+            </tr>
+        </thead>
+        <tbody id="valid-body"></tbody>
+    </table>
+</section>
+
+<section id="invalid">
+    <h2>Documents rejetés</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Nom</th><th>Aperçu</th><th>Date</th><th>Auteur</th>
+            </tr>
+        </thead>
+        <tbody id="invalid-body"></tbody>
+    </table>
+</section>
+
+<!-- Modal Aperçu -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <img id="modal-img" src="">
+    </div>
+</div>
+
+<!-- Librairie QRCode.js -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script>
+const documents = [
+    {id:1,title:"Contrat_Entreprise.pdf",date:"13/08/2025",author:"Mariam",thumbnail:"https://via.placeholder.com/100",status:"pending"},
+    {id:2,title:"Diplome_BTS.pdf",date:"12/08/2025",author:"Jean Dupont",thumbnail:"https://via.placeholder.com/100",status:"pending"},
+    {id:3,title:"Attestation_Faux.pdf",date:"10/08/2025",author:"Alice",thumbnail:"https://via.placeholder.com/100",status:"invalid"}
+];
+
+const pendingBody = document.getElementById("pending-body");
+const validBody = document.getElementById("valid-body");
+const invalidBody = document.getElementById("invalid-body");
+
+function renderTables() {
+    pendingBody.innerHTML="";
+    validBody.innerHTML="";
+    invalidBody.innerHTML="";
+    documents.forEach(doc=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${doc.id}</td>
+            <td>${doc.title}</td>
+            <td><img src="${doc.thumbnail}" class="doc-preview" data-src="${doc.thumbnail}"></td>
+            <td>${doc.date}</td>
+            <td>${doc.author}</td>
+            <td class="qr-cell"></td>
+            <td class="action-cell">
+                ${doc.status==="pending"?'<button class="action-btn valider">Valider ✅</button><button class="action-btn rejeter">Rejeter ❌</button>':''}
+            </td>
+        `;
+        // Gestion des clics sur l'aperçu
+        tr.querySelector(".doc-preview").onclick = (e)=>{
+            document.getElementById("modal-img").src=e.target.dataset.src;
+            document.getElementById("modal").style.display="flex";
+        };
+        // Gestion des boutons
+        if(doc.status==="pending"){
+            tr.querySelector(".valider").onclick=()=>{
+                doc.status="valid";
+                renderTables();
+                const qrCell = tr.querySelector(".qr-cell");
+                QRCode.toDataURL(doc.title).then(url=>{
+                    qrCell.innerHTML=`<img src="${url}" class="qr-code">`;
+                });
+            };
+            tr.querySelector(".rejeter").onclick=()=>{
+                doc.status="invalid";
+                renderTables();
+            };
+        } else if(doc.status==="valid"){
+            QRCode.toDataURL(doc.title).then(url=>{
+                tr.querySelector(".qr-cell").innerHTML=`<img src="${url}" class="qr-code">`;
+            });
+        }
+        // Ajout au tableau correspondant
+        if(doc.status==="pending") pendingBody.appendChild(tr);
+        else if(doc.status==="valid") validBody.appendChild(tr);
+        else invalidBody.appendChild(tr);
+    });
+}
+
+renderTables();
+
+// Gestion des onglets
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+    btn.onclick=()=>{
+        document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        document.querySelectorAll("section").forEach(sec=>sec.classList.remove("active"));
+        document.getElementById(btn.dataset.tab).classList.add("active");
+    };
+});
+
+// Modal
+document.querySelector(".close-modal").onclick=()=>{ document.getElementById("modal").style.display="none"; };
+window.onclick=(e)=>{ if(e.target.id==="modal") document.getElementById("modal").style.display="none"; };
+</script>
+</body>
+</html>

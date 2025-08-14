@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>DIGIT DOCS - Accueil</title>
+<link rel="stylesheet" href="acceuil.css">
+<link rel="stylesheet" th:href="@{/css/acceuil.css}" />
+</head>
+<body>
+
+<header>
+    <h1>📄 DIGIT DOCS</h1>
+    <p>Authentifiez vos documents en toute simplicité</p>
+</header>
+
+<main>
+    <div class="description">
+        DIGIT DOCS est une plateforme qui vous permet de faciliter l'authentification
+        des documents administratifs dans une entreprise.  
+        Un QR code est généré pour chaque document validé afin de garantir
+        une vérification rapide et fiable.  
+        Vos documents sont organisés dans une bibliothèque numérique
+        pour un accès simple et sécurisé.
+    </div>
+
+    
+   <a th:href="@{/register}" class="btn-inscrire">S'inscrire</a>
+
+</main>
+
+<footer>
+    &copy; 2025 DIGIT DOCS - Tous droits réservés
+</footer>
+
+</body>
+</html>

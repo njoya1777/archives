@@ -1,12 +1,13 @@
 com/mariam/auth/repository/DataBaseConnection.class
 com/mariam/auth/repository/DocumentRepository.class
+com/mariam/auth/controller/DocumentController.class
 com/mariam/auth/controller/BibliothequeController.class
 com/mariam/auth/controller/AdminDashboardController.class
 com/mariam/auth/entities/Document.class
 com/mariam/auth/Service/MainUser.class
 com/mariam/auth/controller/ScannerController.class
-com/mariam/auth/controller/EnvoiDocController.class
 com/mariam/auth/controller/UserController.class
+com/mariam/auth/Service/DocumentService.class
 com/mariam/auth/repository/UsersRepository.class
 com/mariam/auth/entities/User.class
 com/mariam/auth/TestConnexion.class

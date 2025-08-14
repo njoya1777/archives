@@ -58,4 +58,9 @@ public class DocumentRepository {
             }
         }
     }
+
+    public Document findById(int id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    }
 }

@@ -1,14 +1,15 @@
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/repository/DocumentRepository.java
+/home/test/archive-jdbc/src/main/java/com/mariam/auth/controller/DocumentController.java
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/controller/FormulaireController.java
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/controller/BibliothequeController.java
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/entities/User.java
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/Service/MainUser.java
-/home/test/archive-jdbc/src/main/java/com/mariam/auth/controller/EnvoiDocController.java
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/controller/AdminDashboardController.java
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/controller/UserController.java
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/controller/ScannerController.java
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/controller/AcceuilController.java
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/TestConnexion.java
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/entities/Document.java
+/home/test/archive-jdbc/src/main/java/com/mariam/auth/Service/DocumentService.java
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/repository/DataBaseConnection.java
 /home/test/archive-jdbc/src/main/java/com/mariam/auth/repository/UsersRepository.java

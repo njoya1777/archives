@@ -1,13 +1,12 @@
 package com.mariam.auth.controller;
 
+import com.mariam.auth.entities.Document;
+import com.mariam.auth.repository.DocumentRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import com.mariam.auth.entities.Document;
-import com.mariam.auth.repository.DocumentRepository;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

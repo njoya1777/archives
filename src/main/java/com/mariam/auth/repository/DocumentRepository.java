@@ -8,65 +8,87 @@ import java.util.List;
 
 public class DocumentRepository {
 
-    public List<Document> findAll() throws SQLException {
-        List<Document> documents = new ArrayList<>();
-        String sql = "SELECT id, votre_nom, nom_document, type_document, date_creation FROM documents";
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:mysql://localhost:3306/axiadocs", "root", "rootpassword");
+    }
 
-        try (Connection conn = DataBaseConnection.getConnection();
+    // Enregistrer un document
+    public void save(Document document) throws SQLException {
+        String sql = "INSERT INTO Document (titre, description, nomFichierOriginal, cheminFichierStocke, dateDepot, hashDocument, qrCodePath, utilisateurId, categorieId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, document.getTitre());
+            stmt.setString(2, document.getDescription());
+            stmt.setString(3, document.getNomFichierOriginal());
+            stmt.setString(4, document.getCheminFichierStocke());
+            stmt.setTimestamp(5, Timestamp.valueOf(document.getDateDepot()));
+            stmt.setString(6, document.getHashDocument());
+            stmt.setString(7, document.getQrCodePath());
+            stmt.setInt(8, document.getUtilisateurId());
+
+            if (document.getCategorieId() != null) {
+                stmt.setInt(9, document.getCategorieId());
+            } else {
+                stmt.setNull(9, Types.INTEGER);
+            }
+
+            stmt.executeUpdate();
+        }
+    }
+
+    // Récupérer tous les documents
+    public List<Document> listDocuments() throws SQLException {
+        List<Document> documents = new ArrayList<>();
+        String sql = "SELECT * FROM Document";
+
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Document doc = new Document();
+                Document doc = new Document(
+                        rs.getString("titre"),
+                        rs.getString("description"),
+                        rs.getString("nomFichierOriginal"),
+                        rs.getString("cheminFichierStocke"),
+                        rs.getString("hashDocument"),
+                        rs.getString("qrCodePath"),
+                        rs.getInt("utilisateurId"),
+                        (rs.getObject("categorieId") != null) ? rs.getInt("categorieId") : null
+                );
                 doc.setId(rs.getInt("id"));
-                doc.setVotreNom(rs.getString("votre_nom"));
-                doc.setNomDocument(rs.getString("nom_document"));
-                doc.setTypeDocument(rs.getString("type_document"));
-                doc.setDateCreation(rs.getTimestamp("date_creation").toLocalDateTime());
-
+                doc.setDateDepot(rs.getTimestamp("dateDepot").toLocalDateTime());
                 documents.add(doc);
             }
         }
         return documents;
     }
 
-    public void save(Document document) throws SQLException {
-        String sql = "INSERT INTO documents (votre_nom, nom_document, type_document, date_creation) VALUES (?, ?, ?, ?)";
-
-        try (Connection conn = DataBaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            stmt.setString(1, document.getVotreNom());
-            stmt.setString(2, document.getNomDocument());
-            stmt.setString(3, document.getTypeDocument());
-            stmt.setTimestamp(4, Timestamp.valueOf(document.getDateCreation()));
-
-            stmt.executeUpdate();
-
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    document.setId(generatedKeys.getInt(1));
-                }
-            }
-        }
-    }
-
+    // Récupérer un document par ID
     public Document findById(int id) throws SQLException {
-        String sql = "SELECT id, votre_nom, nom_document, type_document, date_creation FROM documents WHERE id = ?";
-        try (Connection conn = DataBaseConnection.getConnection();
+        String sql = "SELECT * FROM Document WHERE id = ?";
+        try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    Document doc = new Document();
-                    doc.setId(rs.getInt("id"));
-                    doc.setVotreNom(rs.getString("votre_nom"));
-                    doc.setNomDocument(rs.getString("nom_document"));
-                    doc.setTypeDocument(rs.getString("type_document"));
-                    doc.setDateCreation(rs.getTimestamp("date_creation").toLocalDateTime());
-                    return doc;
-                }
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Document doc = new Document(
+                        rs.getString("titre"),
+                        rs.getString("description"),
+                        rs.getString("nomFichierOriginal"),
+                        rs.getString("cheminFichierStocke"),
+                        rs.getString("hashDocument"),
+                        rs.getString("qrCodePath"),
+                        rs.getInt("utilisateurId"),
+                        (rs.getObject("categorieId") != null) ? rs.getInt("categorieId") : null
+                );
+                doc.setId(rs.getInt("id"));
+                doc.setDateDepot(rs.getTimestamp("dateDepot").toLocalDateTime());
+                return doc;
             }
         }
         return null;

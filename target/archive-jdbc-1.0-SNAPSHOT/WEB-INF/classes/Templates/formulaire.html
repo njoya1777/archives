@@ -39,7 +39,7 @@
             color: #555;
         }
 
-        input, select {
+        input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -48,7 +48,7 @@
             transition: border-color 0.3s;
         }
 
-        input:focus, select:focus {
+        input:focus {
             border-color: #4A90E2;
             outline: none;
         }
@@ -91,8 +91,8 @@
     <h2>Ajouter un document</h2>
     <form action="/documents" method="post">
         <div class="form-group">
-            <label for="userId">ID Utilisateur</label>
-            <input type="number" id="userId" name="userId" required>
+            <label for="votreNom">Votre nom</label>
+            <input type="text" id="votreNom" name="votreNom" required>
         </div>
 
         <div class="form-group">
@@ -105,31 +105,11 @@
             <input type="text" id="typeDocument" name="typeDocument" required>
         </div>
 
-        <div class="form-group">
-            <label for="cheminFichier">Chemin du fichier</label>
-            <input type="text" id="cheminFichier" name="cheminFichier" required>
-        </div>
-
-        <div class="form-group">
-            <label for="qrCode">QR Code (facultatif)</label>
-            <input type="text" id="qrCode" name="qrCode">
-        </div>
-
-        <div class="form-group">
-            <label for="statut">Statut</label>
-            <select id="statut" name="statut" required>
-                <option value="EN_ATTENTE">En attente</option>
-                <option value="VALIDÉ">Validé</option>
-                <option value="REJETÉ">Rejeté</option>
-            </select>
-        </div>
-
         <button type="submit">Enregistrer</button>
     </form>
 
     <div class="link-library">
-       
-        <a th:href="@{/bibliotheque}" class="btn-inscrire">📚 Voir la bibliothèque</a>
+        <a th:href="@{/bibliotheque}">📚 Voir la bibliothèque</a>
     </div>
 </div>
 
